@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayushi & Sunny — Royal Wedding Invitation (#SunShine)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,450;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #fcf8f5;
+            color: #2c221e;
+            overflow-x: hidden;
+        }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-script { font-family: 'Great Vibes', cursive; }
+        .font-serif-elegant { font-family: 'Cormorant Garamond', serif; }
+
+        /* Cover & Video Transitions */
+        #cover-screen, #video-section {
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Scratch Card Styling */
+        #scratch-canvas {
+            touch-action: none;
+            cursor: pointer;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(212,175,55,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(212,175,55,0.8); }
+        }
+        .animate-pulse-gold {
+            animation: pulse-gold 3s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#d4af37] selection:text-white">
+
+    <!-- Background Audio (Royal Instrumental) -->
+    <audio id="bg-music" loop>
+        <source src="https://actions.google.com/sounds/v1/ambiences/indian_flute_meditation.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- Floating Music Toggle Button -->
+    <button onclick="toggleMusic()" id="music-btn" class="fixed top-4 right-4 z-50 bg-black/60 backdrop-blur-md text-amber-200 p-3 rounded-full border border-amber-400/40 shadow-xl hover:scale-110 transition hidden">
+        <svg id="music-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+        </svg>
+    </button>
+
+    <!-- ================= COVER SCREEN ================= -->
+    <div id="cover-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden">
+        
+        <!-- Background Image Cover (CEDD77A7...) with Unsplash Fallback -->
+        <div id="cover-bg" class="absolute inset-0 bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(20, 5, 8, 0.6), rgba(15, 3, 5, 0.9)), url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80');"></div>
+
+        <!-- Content Overlay -->
+        <div id="cover-content" class="relative z-30 flex flex-col justify-between items-center text-center p-6 w-full h-full max-w-md">
+            <!-- Top Ornament -->
+            <div class="pt-8 opacity-90">
+                <span class="text-[#d4af37] tracking-[0.3em] text-xs uppercase font-cinzel">॥ श्री गणेशाय नमः ॥</span>
+            </div>
+
+            <!-- Center Titles -->
+            <div class="my-auto space-y-4 max-w-sm">
+                <p class="text-amber-200/90 tracking-widest uppercase text-xs font-cinzel">The Royal Wedding Celebration</p>
+                <h1 class="font-script text-6xl sm:text-7xl text-amber-100 drop-shadow-md">Ayushi & Sunny</h1>
+                <div class="w-24 h-[1px] bg-[#d4af37] mx-auto opacity-70"></div>
+                <p class="text-rose-100/80 italic text-lg font-serif-elegant">Two hearts, one lifelong adventure</p>
+            </div>
+
+            <!-- Ganesh Ji Medallion Tap Button -->
+            <div class="pb-10 w-full flex flex-col items-center space-y-3">
+                <button onclick="startVideoTransition()" class="group relative flex flex-col items-center focus:outline-none transition transform hover:scale-105">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-b from-[#f3e5ab] via-[#d4af37] to-[#b8860b] p-[3px] shadow-2xl flex items-center justify-center mb-3 animate-pulse-gold">
+                        <div class="w-full h-full bg-[#2a080c] rounded-full flex items-center justify-center overflow-hidden border border-amber-300/60">
+                            <!-- Ganesh Icon -->
+                            <svg class="w-12 h-12 text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C9.24 2 7 4.24 7 7v1.17C5.81 8.54 5 9.68 5 11v1c0 1.38 1.05 2.5 2.4 2.67C7.81 16.3 9.71 18 12 18s4.19-1.7 4.6-3.33C17.95 14.5 19 13.38 19 12v-1c0-1.32-.81-2.46-2-2.83V7c0-2.76-2.24-5-5-5zm0 2c1.65 0 3 1.35 3 3v1h-6V7c0-1.65 1.35-3 3-3zm-5 7h10v1c0 .55-.45 1-1 1h-8c-.55 0-1-.45-1-1v-1zm1 4c1.33.67 2.67 1 4 1s2.67-.33 4-1v2H8v-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="text-amber-100 font-cinzel tracking-[0.25em] text-xs uppercase bg-black/60 px-6 py-2.5 rounded-full border border-amber-400/50 backdrop-blur-sm shadow-lg">Tap to Open Invitation</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CINEMATIC VIDEO OVERLAY (invitation_only.mp4) ================= -->
+    <div id="video-section" class="fixed inset-0 z-40 bg-black opacity-0 pointer-events-none flex flex-col items-center justify-between">
+        <div class="absolute inset-0 overflow-hidden">
+            <video id="intro-video" class="w-full h-full object-cover" playsinline preload="auto">
+                <source src="invitation_only.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Dark Vignette Overlay -->
+            <div class="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        <!-- Video Top Header -->
+        <div class="relative z-20 pt-12 text-center px-4">
+            <span class="text-amber-300 uppercase tracking-[0.4em] text-xs font-cinzel bg-black/60 px-5 py-2 rounded-full backdrop-blur-md border border-amber-400/30">Ayushi & Sunny • #SunShine</span>
+        </div>
+
+        <!-- Scroll Down Button at the End of Video -->
+        <div id="scroll-btn-container" class="relative z-20 pb-16 flex flex-col items-center transition-all duration-700 opacity-0 translate-y-6 pointer-events-none">
+            <button onclick="scrollToMainInvitation()" class="group flex items-center space-x-3 bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#d4af37] text-[#2a080c] px-8 py-4 rounded-full font-cinzel font-bold text-sm tracking-[0.2em] uppercase shadow-2xl hover:scale-105 transition transform border border-amber-200">
+                <span>Scroll Down</span>
+                <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MAIN INVITATION CONTENT ================= -->
+    <div id="main-content" class="max-w-md mx-auto min-h-screen bg-[#fffcf9] shadow-2xl relative border-x border-amber-900/10">
+
+        <!-- Header Hashtag & Subtitle -->
+        <header class="pt-10 pb-6 px-6 text-center border-b border-amber-900/10 bg-gradient-to-b from-rose-50/50 to-transparent">
+            <h2 class="font-script text-5xl text-[#7a2e36] mb-1">#SunShine</h2>
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-800/70 font-cinzel">Two hearts, one lifelong adventure</p>
+        </header>
+
+        <!-- Ring Ceremony Photo (IMG_5631.jpg) at the top -->
+        <section class="p-6">
+            <div class="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-amber-50">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Ring Ceremony" class="w-full h-auto object-cover aspect-[4/5]" onerror="this.src='IMG_5631.jpg'">
+            </div>
+        </section>
+
+        <!-- Save the Date Section with Watermark & Scratch Card -->
+        <section class="relative py-12 px-6 text-center overflow-hidden bg-amber-50/30">
+            <!-- Watermark Image (IMG_5624.jpg) -->
+            <div class="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80');"></div>
+
+            <div class="relative z-10 space-y-6">
+                <div class="inline-block border-y border-amber-800/30 py-2 px-8">
+                    <h3 class="font-script text-5xl text-[#7a2e36]">Save the Date</h3>
+                </div>
+
+                <p class="font-serif-elegant text-base text-[#4a3b32] max-w-xs mx-auto leading-relaxed">
+                    With the heartfelt blessings of our families and the love of our dear ones, we invite you to join us as we celebrate the beginning of a beautiful new chapter for <strong class="text-[#7a2e36]">Ayushi Jain</strong> and <strong class="text-[#7a2e36]">Sunny Arora</strong>.
+                </p>
+
+                <!-- Scratch Card Date Reveal -->
+                <div class="my-6 p-4 bg-white/90 rounded-xl shadow-md border border-amber-200 inline-block w-full max-w-xs">
+                    <p class="text-xs uppercase tracking-widest text-amber-800/80 font-cinzel mb-2">Scratch to Reveal Wedding Date</p>
+                    <div class="relative w-full h-16 bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 rounded-lg overflow-hidden flex items-center justify-center shadow-inner">
+                        <!-- Secret Content Underneath -->
+                        <div class="absolute inset-0 flex items-center justify-center bg-amber-50">
+                            <span class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-widest">20 . 01 . 2027</span>
+                        </div>
+                        <!-- Scratch Canvas Layer -->
+                        <canvas id="scratch-canvas" class="absolute inset-0 w-full h-full cursor-pointer rounded-lg"></canvas>
+                    </div>
+                </div>
+
+                <!-- Live Countdown Timer -->
+                <div class="pt-2">
+                    <p class="text-xs uppercase tracking-widest text-amber-800/70 font-cinzel mb-4">Counting down to Forever</p>
+                    <div class="grid grid-cols-4 gap-2 max-w-xs mx-auto">
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-amber-900/10">
+                            <span id="days" class="block font-cinzel font-bold text-xl text-[#7a2e36]">00</span>
+                            <span class="text-[10px] uppercase text-gray-500 font-cinzel">Days</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-amber-900/10">
+                            <span id="hours" class="block font-cinzel font-bold text-xl text-[#7a2e36]">00</span>
+                            <span class="text-[10px] uppercase text-gray-500 font-cinzel">Hours</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-amber-900/10">
+                            <span id="minutes" class="block font-cinzel font-bold text-xl text-[#7a2e36]">00</span>
+                            <span class="text-[10px] uppercase text-gray-500 font-cinzel">Mins</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-amber-900/10">
+                            <span id="seconds" class="block font-cinzel font-bold text-xl text-[#7a2e36]">00</span>
+                            <span class="text-[10px] uppercase text-gray-500 font-cinzel">Secs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Sliding Photo Cards (Photos 1 to 4) -->
+        <section class="py-12 px-6 bg-gradient-to-b from-white via-amber-50/20 to-white">
+            <div class="text-center mb-8">
+                <h3 class="font-script text-4xl text-[#7a2e36]">Moments of Us</h3>
+                <p class="text-xs uppercase tracking-[0.25em] text-amber-800/70 font-cinzel mt-1">A visual journey of our love</p>
+                <div class="w-12 h-[1px] bg-amber-400 mx-auto mt-3"></div>
+            </div>
+
+            <!-- Vertical Stacked Cards Container -->
+            <div class="space-y-8 max-w-sm mx-auto">
+                <!-- Photo Card 1 (IMG_5624.jpg) -->
+                <div class="bg-white p-4 rounded-2xl shadow-xl border-2 border-amber-200/60 transform transition duration-500 hover:scale-[1.02]">
+                    <div class="relative rounded-xl overflow-hidden shadow-inner aspect-[4/5] bg-amber-50">
+                        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="A Promise of a Lifetime" class="w-full h-full object-cover" onerror="this.src='IMG_5624.jpg'">
+                    </div>
+                    <div class="mt-4 text-center pb-2">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-amber-800/80 font-cinzel">Chapter I</span>
+                        <h4 class="font-script text-3xl text-[#7a2e36] mt-1">A Promise of a Lifetime</h4>
+                    </div>
+                </div>
+
+                <!-- Photo Card 2 (IMG_5625.jpg) -->
+                <div class="bg-white p-4 rounded-2xl shadow-xl border-2 border-amber-200/60 transform transition duration-500 hover:scale-[1.02]">
+                    <div class="relative rounded-xl overflow-hidden shadow-inner aspect-[4/5] bg-amber-50">
+                        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Moments of Magic" class="w-full h-full object-cover" onerror="this.src='IMG_5625.jpg'">
+                    </div>
+                    <div class="mt-4 text-center pb-2">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-amber-800/80 font-cinzel">Chapter II</span>
+                        <h4 class="font-script text-3xl text-[#7a2e36] mt-1">Moments of Magic</h4>
+                    </div>
+                </div>
+
+                <!-- Photo Card 3 (IMG_5628.jpg) -->
+                <div class="bg-white p-4 rounded-2xl shadow-xl border-2 border-amber-200/60 transform transition duration-500 hover:scale-[1.02]">
+                    <div class="relative rounded-xl overflow-hidden shadow-inner aspect-[4/5] bg-amber-50">
+                        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=800&q=80" alt="Our Forever Chapter" class="w-full h-full object-cover" onerror="this.src='IMG_5628.jpg'">
+                    </div>
+                    <div class="mt-4 text-center pb-2">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-amber-800/80 font-cinzel">Chapter III</span>
+                        <h4 class="font-script text-3xl text-[#7a2e36] mt-1">Our Forever Chapter</h4>
+                    </div>
+                </div>
+
+                <!-- Photo Card 4 (IMG_5649.jpg) -->
+                <div class="bg-white p-4 rounded-2xl shadow-xl border-2 border-amber-200/60 transform transition duration-500 hover:scale-[1.02]">
+                    <div class="relative rounded-xl overflow-hidden shadow-inner aspect-[4/5] bg-amber-50">
+                        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=800&q=80" alt="Hand in Hand" class="w-full h-full object-cover" onerror="this.src='IMG_5649.jpg'">
+                    </div>
+                    <div class="mt-4 text-center pb-2">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-amber-800/80 font-cinzel">Chapter IV</span>
+                        <h4 class="font-script text-3xl text-[#7a2e36] mt-1">Hand in Hand</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Celebrations Itinerary (5 Events) -->
+        <section class="py-12 px-6 bg-gradient-to-b from-[#fff8f5] to-amber-50/40">
+            <div class="text-center mb-8">
+                <h3 class="font-script text-4xl text-[#7a2e36]">The Celebrations</h3>
+                <p class="text-xs uppercase tracking-[0.25em] text-amber-800/70 font-cinzel mt-1">Join us in the festivities</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Event 1: Mehendi -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-900/10 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#7a2e36]"></div>
+                    <h4 class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-wider mb-1">Mehendi</h4>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">18th January 2027 | 02:00 PM</p>
+                    <p class="text-xs text-gray-600 mb-4">📍 Residence Celebration</p>
+                    <div class="flex justify-center gap-3">
+                        <a href="https://maps.google.com/?q=New+Delhi" target="_blank" class="px-4 py-1.5 bg-[#7a2e36] text-white text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-[#62242a] transition">Map Location</a>
+                        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Ayushi%20&%20Sunny%20-%20Mehendi%0ADESCRIPTION:Mehendi%20Ceremony%0ALOCATION:Residence%0ADTSTART:20270118T140000Z%0AEND:20270118T190000Z%0AEND:VEVENT%0AEND:VCALENDAR" download="mehendi.ics" class="px-4 py-1.5 bg-amber-100 text-amber-900 text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-amber-200 transition">Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Event 2: Sangeet -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-900/10 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#d4af37]"></div>
+                    <h4 class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-wider mb-1">Sangeet</h4>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">19th January 2027 | 07:00 PM</p>
+                    <p class="text-xs text-gray-600 mb-4">📍 Grand Ballroom, Delhi</p>
+                    <div class="flex justify-center gap-3">
+                        <a href="https://maps.google.com/?q=New+Delhi" target="_blank" class="px-4 py-1.5 bg-[#7a2e36] text-white text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-[#62242a] transition">Map Location</a>
+                        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Ayushi%20&%20Sunny%20-%20Sangeet%0ADESCRIPTION:Sangeet%20Night%0ALOCATION:Grand%20Ballroom,%20Delhi%0ADTSTART:20270119T190000Z%0AEND:20270119T235959Z%0AEND:VEVENT%0AEND:VCALENDAR" download="sangeet.ics" class="px-4 py-1.5 bg-amber-100 text-amber-900 text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-amber-200 transition">Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Event 3: Haldi -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-900/10 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#d4af37]"></div>
+                    <h4 class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-wider mb-1">Haldi</h4>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">20th January 2027 | 11:00 AM</p>
+                    <p class="text-xs text-gray-600 mb-4">📍 Elia, Rajouri Garden, Delhi</p>
+                    <div class="flex justify-center gap-3">
+                        <a href="https://maps.google.com/?q=Elia+Rajouri+Garden+Delhi" target="_blank" class="px-4 py-1.5 bg-[#7a2e36] text-white text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-[#62242a] transition">Map Location</a>
+                        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Ayushi%20&%20Sunny%20-%20Haldi%0ADESCRIPTION:Haldi%20Ceremony%0ALOCATION:Elia,%20Rajouri%20Garden,%20Delhi%0ADTSTART:20270120T110000Z%0AEND:20270120T140000Z%0AEND:VEVENT%0AEND:VCALENDAR" download="haldi.ics" class="px-4 py-1.5 bg-amber-100 text-amber-900 text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-amber-200 transition">Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Event 4: Wedding Ceremony -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-900/10 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#7a2e36]"></div>
+                    <h4 class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-wider mb-1">Wedding Ceremony</h4>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">20th January 2027 | 07:00 PM</p>
+                    <p class="text-xs text-gray-600 mb-4">📍 Golden Crown, Rohini, Delhi</p>
+                    <div class="flex justify-center gap-3">
+                        <a href="https://maps.google.com/?q=Golden+Crown+Rohini+Delhi" target="_blank" class="px-4 py-1.5 bg-[#7a2e36] text-white text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-[#62242a] transition">Map Location</a>
+                        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Ayushi%20&%20Sunny%20-%20Wedding%0ADESCRIPTION:Wedding%20Ceremony%0ALOCATION:Golden%20Crown,%20Rohini,%20Delhi%0ADTSTART:20270120T190000Z%0AEND:20270121T040000Z%0AEND:VEVENT%0AEND:VCALENDAR" download="wedding.ics" class="px-4 py-1.5 bg-amber-100 text-amber-900 text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-amber-200 transition">Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Event 5: Reception -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-900/10 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#7a2e36]"></div>
+                    <h4 class="font-cinzel font-bold text-lg text-[#7a2e36] tracking-wider mb-1">Reception</h4>
+                    <p class="text-sm font-semibold text-gray-700 mb-2">21st January 2027 | 08:00 PM</p>
+                    <p class="text-xs text-gray-600 mb-4">📍 The Royal Palace, Jaipur</p>
+                    <div class="flex justify-center gap-3">
+                        <a href="https://maps.google.com/?q=The+Royal+Palace+Jaipur" target="_blank" class="px-4 py-1.5 bg-[#7a2e36] text-white text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-[#62242a] transition">Map Location</a>
+                        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ASUMMARY:Ayushi%20&%20Sunny%20-%20Reception%0ADESCRIPTION:Grand%20Reception%0ALOCATION:The%20Royal%20Palace,%20Jaipur%0ADTSTART:20270121T200000Z%0AEND:20270122T000000Z%0AEND:VEVENT%0AEND:VCALENDAR" download="reception.ics" class="px-4 py-1.5 bg-amber-100 text-amber-900 text-xs uppercase tracking-wider rounded-md font-cinzel shadow hover:bg-amber-200 transition">Calendar</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Family Sign-Off Footer -->
+        <footer class="py-12 px-6 text-center bg-[#2c1d20] text-amber-100 border-t border-amber-900">
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-400 font-cinzel mb-6">A Legacy of Love</p>
+            
+            <div class="space-y-4 text-sm font-serif-elegant">
+                <div>
+                    <span class="block text-xs uppercase tracking-widest text-amber-300/70 font-cinzel mb-1">Groom Side</span>
+                    <p class="font-semibold">Mr. Rajkumar Arora & Mrs. Anjana Arora</p>
+                </div>
+                <div class="pt-2">
+                    <span class="block text-xs uppercase tracking-widest text-amber-300/70 font-cinzel mb-1">Bride Side</span>
+                    <p class="font-semibold">Mr. Rajeev Jain & Mrs. Ranjana Jain</p>
+                </div>
+            </div>
+
+            <div class="w-16 h-[1px] bg-amber-400/40 mx-auto my-8"></div>
+            <p class="font-script text-3xl text-amber-200">Ayushi & Sunny</p>
+            <p class="text-[10px] text-amber-300/50 tracking-widest uppercase mt-4 font-cinzel">#SunShine • 20.01.2027</p>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const video = document.getElementById('intro-video');
+        const scrollBtnContainer = document.getElementById('scroll-btn-container');
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                musicBtn.classList.remove('animate-pulse');
+            } else {
+                bgMusic.play().catch(e => console.log("Audio play blocked", e));
+                isMusicPlaying = true;
+                musicBtn.classList.add('animate-pulse');
+            }
+        }
+
+        // Transition from Cover Screen to Video Overlay
+        function startVideoTransition() {
+            const coverContent = document.getElementById('cover-content');
+            const coverBg = document.getElementById('cover-bg');
+            const videoSection = document.getElementById('video-section');
+
+            coverContent.style.opacity = '0';
+            coverBg.style.opacity = '0';
+
+            // Start background music
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicBtn.classList.remove('hidden');
+                musicBtn.classList.add('animate-pulse');
+            }).catch(e => console.log("Audio autoplay restricted"));
+
+            setTimeout(() => {
+                document.getElementById('cover-screen').classList.add('fade-out');
+                videoSection.classList.remove('opacity-0', 'pointer-events-none');
+                video.play().catch(e => {
+                    console.log("Video autoplay restriction detected:", e);
+                    // Fallback: If video autoplay fails, show scroll button immediately
+                    showScrollButton();
+                });
+            }, 500);
+        }
+
+        // Show scroll down button when video ends
+        video.addEventListener('ended', () => {
+            showScrollButton();
+        });
+
+        // Also add fallback timer if video fails to load or takes too long
+        video.addEventListener('error', () => {
+            showScrollButton();
+        });
+
+        function showScrollButton() {
+            scrollBtnContainer.classList.remove('opacity-0', 'translate-y-6', 'pointer-events-none');
+            scrollBtnContainer.classList.add('opacity-100', 'translate-y-0');
+        }
+
+        // Smooth scroll to main invitation
+        function scrollToMainInvitation() {
+            try { video.pause(); } catch(err){}
+            const videoSection = document.getElementById('video-section');
+            videoSection.classList.add('fade-out');
+            document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Live Countdown Timer to Jan 20, 2027 00:00:00
+        const weddingDate = new Date('January 20, 2027 00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('minutes').innerText = '00';
+                document.getElementById('seconds').innerText = '00';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Scratch Card Setup
+        const canvas = document.getElementById('scratch-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function initScratchCard() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Draw gold foil layer
+            ctx.fillStyle = '#c5a059';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = '14px Cinzel, serif';
+            ctx.fillStyle = '#4a2c00';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✨ Scratch Here ✨', canvas.width / 2, canvas.height / 2);
+            
+            ctx.globalCompositeOperation = 'destination-out';
+        }
+
+        window.addEventListener('load', initScratchCard);
+        window.addEventListener('resize', initScratchCard);
+
+        let isDrawing = false;
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 22, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mousemove', scratch);
+        window.addEventListener('mouseup', () => isDrawing = false);
+
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+        canvas.addEventListener('touchmove', scratch);
+        window.addEventListener('touchend', () => isDrawing = false);
+    </script>
+</body>
+</html>
